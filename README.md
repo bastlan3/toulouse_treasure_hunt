@@ -12,6 +12,8 @@ Une chasse au trésor interactive à travers Toulouse, la ville rose.
 
 ## 🚀 Déploiement
 
+### deployed [here](https://toulouse-treasure-hunt.vercel.app/) with public access
+
 ### Option 1 : Vercel (le plus simple)
 
 1. Créez un compte sur [vercel.com](https://vercel.com)
