@@ -1,7 +1,45 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 
-const stops = [
+const translations = {
+  fr: {
+    title: "Chasse au Trésor",
+    subtitle: "Toulouse",
+    step: "Étape",
+    mission: "🎯 Ta mission",
+    riddle: "🧩 L'énigme",
+    answer: "✨ La réponse",
+    funFact: "💡 Le savais-tu ?",
+    nextClue: "🧭 Indice pour la suite",
+    revealBtn: "Je donne ma langue au chat !",
+    nextBtn: "Aller à l'étape suivante →",
+    resetBtn: "↺ Recommencer",
+    congratsTitle: "Félicitations !",
+    congratsText: "Tu as terminé la chasse au trésor de Toulouse !",
+    congratsSuggestion: "Traverse le pont jusqu'à la Prairie des Filtres ou reste sur le Quai de Tounis pour un verre au coucher du soleil. La lumière rend le pont rose et or...",
+    resetConfirm: "Recommencer la chasse au trésor depuis le début ?"
+  },
+  en: {
+    title: "Treasure Hunt",
+    subtitle: "Toulouse",
+    step: "Stop",
+    mission: "🎯 Your mission",
+    riddle: "🧩 The riddle",
+    answer: "✨ The answer",
+    funFact: "💡 Did you know?",
+    nextClue: "🧭 Clue for the next stop",
+    revealBtn: "I give up, show me!",
+    nextBtn: "Go to the next stop →",
+    resetBtn: "↺ Start over",
+    congratsTitle: "Congratulations!",
+    congratsText: "You've completed the Toulouse treasure hunt!",
+    congratsSuggestion: "Cross the bridge to Prairie des Filtres or stay on Quai de Tounis for a drink at sunset. The light turns the bridge pink and gold...",
+    resetConfirm: "Start the treasure hunt from the beginning?"
+  }
+};
+
+const stopsData = {
+  fr: [
   {
     id: 1,
     name: "Monument à la Gloire de la Résistance",
@@ -112,28 +150,147 @@ const stops = [
     funFact: "Les dégueuloirs ont sauvé le pont lors de l'inondation catastrophique de 1875 : l'eau a atteint le sommet des arches, mais le Pont Neuf a tenu alors que les autres ponts s'effondraient.",
     clue: null
   }
-];
+  ],
+  en: [
+  {
+    id: 1,
+    name: "Monument to the Glory of the Resistance",
+    location: "Allées Frédéric-Mistral, facing the former Gestapo headquarters",
+    intro: "Welcome to the treasure hunt! You start in front of a strange grass mound with metal masts. It's the entrance to an underground memorial.",
+    mission: "Enter the raw concrete tunnel. You'll cross three crypts then take the 'Corridor of Hope' that passes UNDER the avenue.",
+    riddle: "In this corridor, darkness hides an eye that opens only once a year — on the anniversary of the end of night. On August 19th at exactly 11am, it sheds a golden tear on an engraved date. Find this eye. What does it look at?",
+    answer: "A LIGHT TUBE in the ceiling! It was calculated so that the sun illuminates the commemorative plaque exactly on the day of Toulouse's Liberation.",
+    funFact: "The architects wanted to reference Montségur and the Cathars, the 'first resistance fighters'. But Earth's axis shift has gradually thrown off the alignment since 1971...",
+    clue: "You've emerged from darkness into a garden built on a former convent. At the main entrance, two giantesses stand guard — their skin is not pink brick but stone stolen from a vanished chapel. What color are they?"
+  },
+  {
+    id: 2,
+    name: "Jardin des Plantes",
+    location: "Monumental gate, allées Jules-Guesde",
+    intro: "You've exited the tunnel into this 7-hectare garden, created after the Revolution on the ruins of a convent.",
+    mission: "Head to the main entrance gate on allées Jules-Guesde (Museum side).",
+    riddle: "Two sentinels frame the gate. They weren't born here — torn from a sanctuary destroyed by the Revolution. A clue: their skin is the same color as the region's wine. Where do these orphans come from?",
+    answer: "RED MARBLE COLUMNS from Languedoc! They were salvaged from the Carmelite chapel when the convent was destroyed. The red marble comes from the Caunes-Minervois quarries.",
+    funFact: "This monumental gate was designed in 1806 by architect Jacques-Pascal Virebent. The botanical garden itself dates from 1794.",
+    clue: "🚲 Grab a VélôToulouse bike. Follow the Canal du Midi north (~15 min). You're looking for a garden where people meditate on emptiness — and where an island bears the name of what Buddhists hope to attain."
+  },
+  {
+    id: 3,
+    name: "Japanese Garden Pierre-Baudis",
+    location: "Compans-Caffarelli Park, boulevard Lascrosses",
+    intro: "A true Zen garden in the heart of Toulouse, inspired by the imperial Katsura villa in Kyoto.",
+    mission: "Enter the enclosed garden (free). Explore this little piece of Kyoto...",
+    riddle: "To reach the afterlife, cross a wooden path painted the color of danger. It leads to a land that doesn't really exist. Somewhere here, a bronze man meditates — he left Japan to teach 'zazen' in Europe. What is his name?",
+    answer: "The RED BRIDGE leads to PARADISE ISLAND. The bust is of TAISEN DESHIMARU, a Zen master who founded over 100 dojos in Europe.",
+    funFact: "The garden also contains a 'Crane Island' and a 'Turtle Island' made of rocks (symbols of immortality), and a tea pavilion on stilts.",
+    clue: "Head south into the old town. You're looking for the largest Romanesque church in Western Europe. On its south side, a door faces the 'middle of the city' — that's actually its name in Occitan."
+  },
+  {
+    id: 4,
+    name: "Saint-Sernin Basilica",
+    location: "Place Saint-Sernin",
+    intro: "A masterpiece of Romanesque art, UNESCO World Heritage listed on the Way of St. James.",
+    mission: "Walk around the basilica to the SOUTH side (facing rue du Taur). Find the PORTE MIÈGEVILLE — it's the only door with a sculpted tympanum.",
+    riddle: "Everyone looks at Christ ascending to heaven. Not you. Look HIGHER — up to the stone frieze under the roof. Among the beasts and foliage, search for the only human faces. Two sisters have hidden there for 900 years. Their expression isn't pious — more mocking. How many are there? And describe their expression.",
+    answer: "TWO WOMEN'S FACES, very expressive — almost mischievous and playful for 12th-century sculpture! They're among the modillons (small supports) on the cornice ABOVE the tympanum.",
+    funFact: "The same sculptor who made this portal later went to work at Santiago de Compostela. This door is literally the start of the pilgrimage. 'Miègeville' means 'middle of the city' in Occitan.",
+    clue: "The door's name tells you where to go: 'Miègeville' = middle of the city. Walk down the street it faces — the same path where a saint was dragged by a beast in 250 AD. Another church marks where the rope finally broke. Its name evokes that beast."
+  },
+  {
+    id: 5,
+    name: "Notre-Dame du Taur",
+    location: "Rue du Taur (between Capitole and Saint-Sernin)",
+    intro: "⚠️ Closed for renovations until late 2025 — you'll only see the exterior. But what a façade!",
+    mission: "Look up to see the 42-meter bell-wall, squeezed between buildings.",
+    riddle: "This bell tower is a flat wall, not a tower. And this wall has ears — in architecture, they're called 'ouïes' (sound holes). They're arranged on two levels. Count ALL the ears. Then look at the shape of their arches: they resemble a bishop's headdress. What type of arch is this?",
+    answer: "6 SOUND HOLES total (3 per level). The arches are shaped like a MITRE (bishop's hat) — they're called 'mitre arches', the signature of Toulouse Gothic.",
+    funFact: "'Taur' means bull in Occitan. In 250 AD, Saint Saturnin was tied to a bull and dragged to this spot. The rope supposedly broke right here.",
+    clue: "Continue to a vast square. In the center, a giant bronze cross weighing 20 tons. Its 12 points once bore disciples — today they bear destiny. Find the one for your mother's birth month."
+  },
+  {
+    id: 6,
+    name: "Place du Capitole",
+    location: "Place du Capitole",
+    intro: "The beating heart of Toulouse, with its majestic brick and stone façade.",
+    mission: "Go to the center of the square. A huge bronze cross is embedded in the ground.",
+    riddle: "This cross weighs more than a bus. Its 12 arms end in medallions. Originally, they honored 12 men who followed Jesus. But in 1995, an artist replaced them with something else — something that predicts the future according to the superstitious. What do these 12 symbols represent today? And which one is your mother's?",
+    answer: "The 12 ZODIAC SIGNS! In 1995, Raymond Moretti replaced the apostles with the horoscope. The cross weighs 20 tons.",
+    funFact: "This decision outraged purists who called it 'kitsch stuffing'. The arcades around the square contain 29 ceiling paintings by the same artist, illustrating Toulouse's history.",
+    clue: "The friars who preached against the Cathars built a church nearby. Inside, an impossible tree: a single trunk, but dozens of stone branches holding up the sky. Walk west."
+  },
+  {
+    id: 7,
+    name: "Jacobins Convent",
+    location: "Place des Jacobins",
+    intro: "A masterpiece of Southern Gothic, built by the Dominicans to fight the Cathar heresy.",
+    mission: "Enter the church (~5€). Go to the back, to the CHOIR, and look up.",
+    riddle: "Here grows a stone tree. Its trunk is a single column; its branches spread at 28 meters high to support the entire vault. A poet gave it the name of an oasis tree. Count its branches — the stone ribs spreading from the top. What is their exact number?",
+    answer: "Exactly 22 RIBS! This is the famous Jacobins PALM TREE. The nickname comes from poet Paul Claudel. It's an architectural feat unique in the world.",
+    funFact: "Dalí was inspired by it for 'Santiago El Grande' but always refused to credit the Toulouse photographer Jean Dieuzaide who had shown him the image.",
+    clue: "A plant once made Toulouse rich — a humble herb that produced the color of the sky. Its merchants paid for a palace nearby. In its courtyard, a poor man has been grimacing for 500 years — he wears something surprising on his head to ease his pain."
+  },
+  {
+    id: 8,
+    name: "Hôtel d'Assézat",
+    location: "Place d'Assézat, near the Garonne",
+    intro: "The finest Renaissance mansion in Toulouse, built by a pastel merchant who became fabulously wealthy.",
+    mission: "Enter through the monumental portal (free access to courtyard). In the courtyard, find the tower containing the grand staircase.",
+    riddle: "Climb to the first floor of the tower. A stone giant has been suffering here for 500 years — half man, half column, he carries the weight of the world on his shoulders. But look at his head: someone took pity on him and gave him an incongruous object to ease his pain. This object has no place in architecture. What is it?",
+    answer: "A CUSHION! The ATLAS FIGURE (carved figure supporting the console) has a soft cushion on his head — a detail full of Renaissance humor, totally unexpected.",
+    funFact: "The three levels of the façade use the three Greek orders in sequence: DORIC (bottom), IONIC (middle), CORINTHIAN (top). The architect was Nicolas Bachelier.",
+    clue: "Head south into the oldest quarter. The streets still bear the names of trades: thread-makers, knife-makers... On a wall near the river, a giant woman sleeps surrounded by false faces from around the world. It's a 'symphony' painted by an artist born here."
+  },
+  {
+    id: 9,
+    name: "Les Carmes — Miss Van Mural",
+    location: "Rue du Pont de Tounis (near Dalbade church)",
+    intro: "The Carmes quarter: medieval alleyways, covered market, and world-renowned street art.",
+    mission: "Find rue du Pont de Tounis. Look for a building façade transformed into art.",
+    riddle: "A woman dreams on this wall. Around her float dozens of faces that aren't faces — you can put them on and take them off. Some laugh, some grimace, some come from China, others from Africa or Mexico. The artist who painted it grew up in this city and used to paint 'dolls' over the boys' tags. How many of these false faces can you count?",
+    answer: "They're MASKS — more than 20, all different! The mural is called 'The Symphony of Dreams' and the artist is MISS VAN (born in Toulouse).",
+    funFact: "Miss Van started graffiti at 18. Her sensual 'Dolls' painted over masculine tags were a pioneering feminist act in street art.",
+    clue: "Walk toward the river. The oldest bridge has holes in its pillars — mouths that vomit the river when it gets angry. In one of these mouths, an illegal tenant has lived since 2017. Find him."
+  },
+  {
+    id: 10,
+    name: "Pont Neuf",
+    location: "Pont Neuf, on the Garonne",
+    intro: "Despite its name ('New Bridge'), it's the oldest bridge still standing in Toulouse — built in the 16th century!",
+    mission: "Cross the bridge or go down to the quay. Look at the pillars: they have strange oval openings.",
+    riddle: "These holes have a crude name — they 'puke out' floodwater to save the bridge (called 'dégueuloirs' in French). But since 2017, a squatter has lived in one of them. An artist installed him there at 3am with a ladder and an inflatable mattress. This squatter never moves, never eats, and stares at the river. He's the color of danger, of blood, of fire trucks. Find him.",
+    answer: "A SMALL RED STATUE OF A CHILD! By artist James Colomina, installed secretly in June 2017. It weighs 40 kg and isn't even fixed — just placed in the opening.",
+    funFact: "The dégueuloirs saved the bridge during the catastrophic 1875 flood: the water reached the top of the arches, but Pont Neuf held while other bridges collapsed.",
+    clue: null
+  }
+  ]
+};
 
 function App() {
   const [currentStop, setCurrentStop] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [completedStops, setCompletedStops] = useState([]);
+  const [lang, setLang] = useState('fr');
+
+  const t = translations[lang];
+  const stops = stopsData[lang];
 
   useEffect(() => {
     const saved = localStorage.getItem('toulouse-hunt-progress');
     if (saved) {
-      const { current, completed } = JSON.parse(saved);
+      const { current, completed, language } = JSON.parse(saved);
       setCurrentStop(current);
       setCompletedStops(completed);
+      if (language) setLang(language);
     }
   }, []);
 
   useEffect(() => {
     localStorage.setItem('toulouse-hunt-progress', JSON.stringify({
       current: currentStop,
-      completed: completedStops
+      completed: completedStops,
+      language: lang
     }));
-  }, [currentStop, completedStops]);
+  }, [currentStop, completedStops, lang]);
 
   const handleReveal = () => {
     setRevealed(true);
@@ -149,12 +306,16 @@ function App() {
   };
 
   const handleReset = () => {
-    if (window.confirm('Recommencer la chasse au trésor depuis le début ?')) {
+    if (window.confirm(t.resetConfirm)) {
       setCurrentStop(0);
       setRevealed(false);
       setCompletedStops([]);
       localStorage.removeItem('toulouse-hunt-progress');
     }
+  };
+
+  const toggleLang = () => {
+    setLang(lang === 'fr' ? 'en' : 'fr');
   };
 
   const goToStop = (index) => {
@@ -172,14 +333,17 @@ function App() {
   return (
     <div className="app">
       <header className="header">
+        <button className="lang-toggle" onClick={toggleLang}>
+          {lang === 'fr' ? '🇬🇧 EN' : '🇫🇷 FR'}
+        </button>
         <div className="header-content">
-          <h1>Chasse au Trésor</h1>
-          <p className="subtitle">Toulouse</p>
+          <h1>{t.title}</h1>
+          <p className="subtitle">{t.subtitle}</p>
         </div>
         <div className="progress-container">
           <div className="progress-bar" style={{ width: `${progress}%` }} />
         </div>
-        <p className="progress-text">Étape {currentStop + 1} / {stops.length}</p>
+        <p className="progress-text">{t.step} {currentStop + 1} / {stops.length}</p>
       </header>
 
       <nav className="stop-nav">
@@ -199,7 +363,7 @@ function App() {
       <main className="main">
         <article className="card">
           <div className="card-header">
-            <span className="stop-number">Étape {stop.id}</span>
+            <span className="stop-number">{t.step} {stop.id}</span>
             <h2 className="stop-name">{stop.name}</h2>
             <p className="stop-location">📍 {stop.location}</p>
           </div>
@@ -210,35 +374,35 @@ function App() {
             </section>
 
             <section className="section">
-              <h3>🎯 Ta mission</h3>
+              <h3>{t.mission}</h3>
               <p>{stop.mission}</p>
             </section>
 
             <section className="section riddle-box">
-              <h3>🧩 L'énigme</h3>
+              <h3>{t.riddle}</h3>
               <p className="riddle-text">{stop.riddle}</p>
             </section>
 
             {!revealed ? (
               <button className="reveal-btn" onClick={handleReveal}>
                 <span className="btn-icon">🗝️</span>
-                Je donne ma langue au chat !
+                {t.revealBtn}
               </button>
             ) : (
               <div className="revealed-content">
                 <section className="section answer-box">
-                  <h3>✨ La réponse</h3>
+                  <h3>{t.answer}</h3>
                   <p>{stop.answer}</p>
                 </section>
 
                 <section className="section fun-fact">
-                  <h3>💡 Le savais-tu ?</h3>
+                  <h3>{t.funFact}</h3>
                   <p>{stop.funFact}</p>
                 </section>
 
                 {stop.clue && (
                   <section className="section clue">
-                    <h3>🧭 Indice pour la prochaine étape</h3>
+                    <h3>{t.nextClue}</h3>
                     <p className="clue-text">{stop.clue}</p>
                   </section>
                 )}
@@ -246,13 +410,13 @@ function App() {
                 {isLastStop && revealed ? (
                   <div className="finale">
                     <div className="finale-icon">🎉</div>
-                    <h3>Félicitations !</h3>
-                    <p>Tu as terminé la chasse au trésor de Toulouse !</p>
-                    <p className="finale-suggestion">Traverse le pont jusqu'à la Prairie des Filtres ou reste sur le Quai de Tounis pour un verre au coucher du soleil. La lumière rend le pont rose et or...</p>
+                    <h3>{t.congratsTitle}</h3>
+                    <p>{t.congratsText}</p>
+                    <p className="finale-suggestion">{t.congratsSuggestion}</p>
                   </div>
                 ) : (
                   <button className="next-btn" onClick={handleNext}>
-                    Aller à l'étape suivante →
+                    {t.nextBtn}
                   </button>
                 )}
               </div>
@@ -263,7 +427,7 @@ function App() {
 
       <footer className="footer">
         <button className="reset-btn" onClick={handleReset}>
-          ↺ Recommencer
+          {t.resetBtn}
         </button>
       </footer>
     </div>
